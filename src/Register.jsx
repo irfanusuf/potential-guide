@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,6 +12,7 @@ import {
   createTheme,
   LinearProgress,
 } from "@mui/material";
+import axios from "axios";
 // import { Google as GoogleIcon } from "@mui/icons-material";
 
 const theme = createTheme({
@@ -35,6 +36,32 @@ const theme = createTheme({
 });
 
 const RegisterForm = () => {
+  const [password, setPassword] = useState("");
+  const [regressionScore , setregressionScore] =useState(0)
+  
+
+  const axiosInstance = axios.create({
+    // baseURL : "http://localhost:4000",
+    baseURL : "https://crispy-spoon-9izq.onrender.com"
+  })
+
+  
+  const getLogisticRegression = useCallback( async (password) => {
+    try {
+        const {data} = await axiosInstance.post("/check/regression" , {password})
+        setregressionScore(data.regressionScore)
+
+    } catch (error) {
+      console.log(error);
+    }
+  },[axiosInstance])
+
+  useEffect(() => {
+
+    getLogisticRegression(password)
+
+  }, [getLogisticRegression , password]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -49,120 +76,120 @@ const RegisterForm = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-     
-     <Container maxWidth="md" sx={{ 
-        // border : "1px solid green ", 
-        backgroundColor : "#121212",
-        minHeight: 600,
-        paddingY : 4,
-        borderRadius :3,
-        marginTop : {xs : 5, md : 10},
-        display : {xs : "block" , md : "flex"}
-        }}>
-
-    
-
-      <Container component="main" maxWidth="xs" >
-
-      <Typography
-        variant="h5"
-        color="primary"
-        sx={{ fontWeight: "bold", textAlign: "center"  }}
+      <Container
+        maxWidth="md"
+        sx={{
+          // border : "1px solid green ",
+          backgroundColor: "#121212",
+          minHeight: 600,
+          paddingY: 4,
+          borderRadius: 3,
+          marginTop: { xs: 5, md: 10 },
+          display: { xs: "block", md: "flex" },
+        }}
       >
-        ML based password validation system.
-      </Typography>
-
-
-        <Box
-          sx={{
-            marginTop: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {/* Icon */}
-          <Box sx={{ marginBottom: 2 }}>
-            <Typography
-              variant="h2"
-              color="primary"
-              sx={{ fontWeight: "bold", textAlign: "center" }}
-            >
-              ∞
-            </Typography>
-          </Box>
-
-          {/* Title */}
-          <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-            Register With Us 
+        <Container component="main" maxWidth="xs">
+          <Typography
+            variant="h5"
+            color="primary"
+            sx={{ fontWeight: "bold", textAlign: "center" }}
+          >
+            ML based password validation system.
           </Typography>
 
-          {/* Form */}
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
             sx={{
-              width: "100%", // Fixes container width
+              marginTop: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              variant="outlined"
-              // InputLabelProps={{
-              //   style: { color: "#AFAFAF" },
-              // }}
+            {/* Icon */}
+            <Box sx={{ marginBottom: 2 }}>
+              <Typography
+                variant="h2"
+                color="primary"
+                sx={{ fontWeight: "bold", textAlign: "center" }}
+              >
+                ∞
+              </Typography>
+            </Box>
+
+            {/* Title */}
+            <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
+              Register With Us
+            </Typography>
+
+            {/* Form */}
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
               sx={{
-                input: { color: "#FFFFFF" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                },
+                width: "100%", // Fixes container width
               }}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              // InputLabelProps={{
-              //   style: { color: "#AFAFAF" },
-              // }}
-              sx={{
-                input: { color: "#FFFFFF" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#1DFDBF",
+            >
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                variant="outlined"
+                // InputLabelProps={{
+                //   style: { color: "#AFAFAF" },
+                // }}
+                sx={{
+                  input: { color: "#FFFFFF" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
                   },
-                  "&:hover fieldset": {
-                    borderColor: "#1DFDBF",
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                // InputLabelProps={{
+                //   style: { color: "#AFAFAF" },
+                // }}
+                sx={{
+                  input: { color: "#FFFFFF" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
                   },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                },
-              }}
-            />
-            {/* Forgot Password */}
-            {/* <Box
+                }}
+              />
+              {/* Forgot Password */}
+              {/* <Box
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
@@ -174,29 +201,29 @@ const RegisterForm = () => {
               </Link>
             </Box> */}
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                backgroundColor: "#1DFDBF",
-                color: "#000000",
-                fontWeight: "bold",
-                marginTop: 4,
-                "&:hover": {
-                  backgroundColor: "#19D6A9",
-                },
-              }}
-            >
-              Register
-            </Button>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{
+                  backgroundColor: "#1DFDBF",
+                  color: "#000000",
+                  fontWeight: "bold",
+                  marginTop: 4,
+                  "&:hover": {
+                    backgroundColor: "#19D6A9",
+                  },
+                }}
+              >
+                Register
+              </Button>
 
-            {/* Divider */}
-            <Divider sx={{ marginY: 3 }}>OR</Divider>
+              {/* Divider */}
+              <Divider sx={{ marginY: 3 }}>OR</Divider>
 
-            {/* Google Login Button */}
-            {/* <Button
+              {/* Google Login Button */}
+              {/* <Button
               fullWidth
               variant="outlined"
               startIcon={<GoogleIcon />}
@@ -214,90 +241,124 @@ const RegisterForm = () => {
               Login with Google
             </Button> */}
 
-            {/* Footer */}
-            <Typography
-              variant="body2"
-              sx={{
-                marginTop: 2,
-                textAlign: "center",
-                color: "#AFAFAF",
-              }}
-            >
-              Already have an Account?{" "}
-              <Link href="/user/login" underline="hover" color="primary">
-                Login Now!
-              </Link>
-            </Typography>
+              {/* Footer */}
+              <Typography
+                variant="body2"
+                sx={{
+                  marginTop: 2,
+                  textAlign: "center",
+                  color: "#AFAFAF",
+                }}
+              >
+                Already have an Account?{" "}
+                <Link href="/user/login" underline="hover" color="primary">
+                  Login Now!
+                </Link>
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </Container>
+
+        <Container sx={{ marginTop: { xs: 5, md: 0 }, flex: 1 }}>
+          <Typography
+            variant="h5"
+            color="primary"
+            sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 2 }}
+          >
+            Password Strength
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 300,
+            }}
+          >
+            <Box sx={{ marginBottom: 2, width: "100%" }}>
+              <Typography
+                variant="h6"
+                color="secondary"
+                sx={{ textAlign: "left" }}
+              >
+                Decision Tree
+              </Typography>
+              <LinearProgress
+                color="secondary"
+                variant="determinate"
+                value={70}
+                sx={{ marginTop: 1 }}
+              />
+            </Box>
+
+            <Box sx={{ marginBottom: 2, width: "100%" }}>
+              <Typography
+                variant="h6"
+                color="success"
+                sx={{ textAlign: "left" }}
+              >
+                Logistic Regression
+              </Typography>
+              <LinearProgress
+                color="success"
+                variant="determinate"
+                value={regressionScore}
+                sx={{ marginTop: 1 }}
+              />
+            </Box>
+
+            <Box sx={{ marginBottom: 2, width: "100%" }}>
+              <Typography variant="h6" color="info" sx={{ textAlign: "left" }}>
+                Neural Network
+              </Typography>
+              <LinearProgress
+                color="info"
+                variant="determinate"
+                value={80}
+                sx={{ marginTop: 1 }}
+              />
+            </Box>
+
+            <Box sx={{ marginBottom: 2, width: "100%" }}>
+              <Typography
+                variant="h6"
+                color="warning"
+                sx={{ textAlign: "left" }}
+              >
+                Random Forest
+              </Typography>
+              <LinearProgress
+                color="warning"
+                variant="determinate"
+                value={50}
+                sx={{ marginTop: 1 }}
+              />
+            </Box>
+          </Box>
+
+          <Typography
+            variant="h5"
+            color="primary"
+            sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 2 }}
+          >
+            Aggregrate Strength
+          </Typography>
+
+          <Box sx={{ marginBottom: 2, width: "100%" }}>
+            <Typography variant="h6" color="#fff" sx={{ textAlign: "left" }}>
+              Average
+            </Typography>
+            <LinearProgress
+              color="primary"
+              variant="determinate"
+              value={50}
+              sx={{ marginTop: 1 }}
+            />
+          </Box>
+        </Container>
       </Container>
-
-
-      <Container sx={{ marginTop: { xs: 5, md: 0 }, flex: 1 }}>
-      <Typography
-        variant="h5"
-        color="primary"
-        sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 2 }}
-      >
-        Password Strength
-      </Typography>
-
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" , justifyContent : "center", minHeight : 300 }}>
-      
-        <Box sx={{ marginBottom: 2, width: "100%" }}>
-          <Typography variant="h6" color="secondary" sx={{ textAlign: "left" }}>
-            Decision Tree
-          </Typography>
-          <LinearProgress  color="secondary" variant="determinate" value={70} sx={{ marginTop: 1 }} />
-        </Box>
-
-       
-        <Box sx={{ marginBottom: 2, width: "100%" }}>
-          <Typography variant="h6" color="success" sx={{ textAlign: "left" }}>
-            Logistic Regression
-          </Typography>
-          <LinearProgress color="success" variant="determinate" value={60} sx={{ marginTop: 1 }} />
-        </Box>
-
-      
-        <Box sx={{ marginBottom: 2, width: "100%" }}>
-          <Typography variant="h6" color="info" sx={{ textAlign: "left" }}>
-            Neural Network
-          </Typography>
-          <LinearProgress color="info" variant="determinate" value={80} sx={{ marginTop: 1 }} />
-        </Box>
-
-        <Box sx={{ marginBottom: 2, width: "100%" }}>
-          <Typography variant="h6" color="warning" sx={{ textAlign: "left" }}>
-            Random Forest
-          </Typography>
-          <LinearProgress color="warning" variant="determinate" value={50} sx={{ marginTop: 1 }} />
-        </Box>
-      </Box>
-
-
-      <Typography
-        variant="h5"
-        color="primary"
-        sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 2 }}
-      >
-        Aggregrate Strength
-      </Typography>
-
-
-      <Box sx={{ marginBottom: 2, width: "100%" }}>
-          <Typography variant="h6" color="#fff" sx={{ textAlign: "left" }}>
-            Average
-          </Typography>
-          <LinearProgress color="primary" variant="determinate" value={50} sx={{ marginTop: 1 }} />
-        </Box>
-
-
-    </Container>
-
-
-      </Container>
-
     </ThemeProvider>
   );
 };
