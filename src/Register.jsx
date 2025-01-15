@@ -10,6 +10,7 @@ import {
   Link,
   ThemeProvider,
   createTheme,
+  LinearProgress,
 } from "@mui/material";
 // import { Google as GoogleIcon } from "@mui/icons-material";
 
@@ -33,7 +34,7 @@ const theme = createTheme({
   },
 });
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -48,24 +49,30 @@ const LoginForm = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <Container
-        maxWidth="xs"
-        sx={{
-          // border : "1px solid green ",
-          backgroundColor: "#121212",
-          height: 600,
-          paddingY: 4,
-          borderRadius: 3,
-          marginTop: 10,
-        }}
+     
+     <Container maxWidth="md" sx={{ 
+        // border : "1px solid green ", 
+        backgroundColor : "#121212",
+        minHeight: 600,
+        paddingY : 4,
+        borderRadius :3,
+        marginTop : {xs : 5, md : 10},
+        display : {xs : "block" , md : "flex"}
+        }}>
+
+    
+
+      <Container component="main" maxWidth="xs" >
+
+      <Typography
+        variant="h5"
+        color="primary"
+        sx={{ fontWeight: "bold", textAlign: "center"  }}
       >
-        <Typography
-          variant="h5"
-          color="primary"
-          sx={{ fontWeight: "bold", textAlign: "center" }}
-        >
-          ML based password validation system.
-        </Typography>
+        ML based password validation system.
+      </Typography>
+
+
         <Box
           sx={{
             marginTop: 0,
@@ -87,7 +94,7 @@ const LoginForm = () => {
 
           {/* Title */}
           <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-            Login
+            Register With Us 
           </Typography>
 
           {/* Form */}
@@ -155,7 +162,7 @@ const LoginForm = () => {
               }}
             />
             {/* Forgot Password */}
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
@@ -165,7 +172,7 @@ const LoginForm = () => {
               <Link href="#" underline="hover" color="primary" variant="body2">
                 Forgot password?
               </Link>
-            </Box>
+            </Box> */}
 
             {/* Submit Button */}
             <Button
@@ -176,12 +183,13 @@ const LoginForm = () => {
                 backgroundColor: "#1DFDBF",
                 color: "#000000",
                 fontWeight: "bold",
+                marginTop: 4,
                 "&:hover": {
                   backgroundColor: "#19D6A9",
                 },
               }}
             >
-              Log in
+              Register
             </Button>
 
             {/* Divider */}
@@ -215,16 +223,83 @@ const LoginForm = () => {
                 color: "#AFAFAF",
               }}
             >
-              Don’t have an account?{" "}
-              <Link href="/" underline="hover" color="primary">
-                Sign Up Now
+              Already have an Account?{" "}
+              <Link href="/user/login" underline="hover" color="primary">
+                Login Now!
               </Link>
             </Typography>
           </Box>
         </Box>
       </Container>
+
+
+      <Container sx={{ marginTop: { xs: 5, md: 0 }, flex: 1 }}>
+      <Typography
+        variant="h5"
+        color="primary"
+        sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 2 }}
+      >
+        Password Strength
+      </Typography>
+
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" , justifyContent : "center", minHeight : 300 }}>
+      
+        <Box sx={{ marginBottom: 2, width: "100%" }}>
+          <Typography variant="h6" color="secondary" sx={{ textAlign: "left" }}>
+            Decision Tree
+          </Typography>
+          <LinearProgress  color="secondary" variant="determinate" value={70} sx={{ marginTop: 1 }} />
+        </Box>
+
+       
+        <Box sx={{ marginBottom: 2, width: "100%" }}>
+          <Typography variant="h6" color="success" sx={{ textAlign: "left" }}>
+            Logistic Regression
+          </Typography>
+          <LinearProgress color="success" variant="determinate" value={60} sx={{ marginTop: 1 }} />
+        </Box>
+
+      
+        <Box sx={{ marginBottom: 2, width: "100%" }}>
+          <Typography variant="h6" color="info" sx={{ textAlign: "left" }}>
+            Neural Network
+          </Typography>
+          <LinearProgress color="info" variant="determinate" value={80} sx={{ marginTop: 1 }} />
+        </Box>
+
+        <Box sx={{ marginBottom: 2, width: "100%" }}>
+          <Typography variant="h6" color="warning" sx={{ textAlign: "left" }}>
+            Random Forest
+          </Typography>
+          <LinearProgress color="warning" variant="determinate" value={50} sx={{ marginTop: 1 }} />
+        </Box>
+      </Box>
+
+
+      <Typography
+        variant="h5"
+        color="primary"
+        sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 2 }}
+      >
+        Aggregrate Strength
+      </Typography>
+
+
+      <Box sx={{ marginBottom: 2, width: "100%" }}>
+          <Typography variant="h6" color="#fff" sx={{ textAlign: "left" }}>
+            Average
+          </Typography>
+          <LinearProgress color="primary" variant="determinate" value={50} sx={{ marginTop: 1 }} />
+        </Box>
+
+
+    </Container>
+
+
+      </Container>
+
     </ThemeProvider>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
