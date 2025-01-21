@@ -37,30 +37,92 @@ const theme = createTheme({
 
 const RegisterForm = () => {
   const [password, setPassword] = useState("");
-  const [regressionScore , setregressionScore] =useState(0)
-  
+  const [regressionScore, setRegressionScore] = useState(0);
+  const [randomForestScore, setRandomForestScore] = useState(0);
+  const [decisionScore , setDecisionScore] = useState(0)
+  const [similarityScore , setSimilarityScore] = useState(0)
+
+  const [averageScore, setAverageScore] = useState(0);
 
   const axiosInstance = axios.create({
-    // baseURL : "http://localhost:4000",
+    // baseURL: "http://localhost:4000",
     baseURL : "https://crispy-spoon-9izq.onrender.com"
-  })
+  });
 
-  
-  const getLogisticRegression = useCallback( async (password) => {
-    try {
-        const {data} = await axiosInstance.post("/check/regression" , {password})
-        setregressionScore(data.regressionScore)
+  const getLogisticRegression = useCallback(
+    async (password) => {
+      try {
+        const { data } = await axiosInstance.post("/check/regression", {
+          password,
+        });
+        setRegressionScore(data.regressionScore);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [axiosInstance]
+  );
 
-    } catch (error) {
-      console.log(error);
-    }
-  },[axiosInstance])
+  const getRandomForest = useCallback(
+    async (password) => {
+      try {
+        const { data } = await axiosInstance.post("/check/randomForest", {
+          password,
+        });
+        setRandomForestScore(data.randomForestScore);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [axiosInstance]
+  );
+
+ 
+  const getDecisionScore = useCallback(
+    async (password) => {
+      try {
+        const { data } = await axiosInstance.post("/check/decision", {
+          password,
+        });
+        setDecisionScore(data.decisionTreeScore);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [axiosInstance]
+  );
+
+  const getSimilarityScore = useCallback(
+    async (password) => {
+      try {
+        const { data } = await axiosInstance.post("/check/similarity", {
+          password,
+        });
+        setSimilarityScore(data.score);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [axiosInstance]
+  );
+
+
 
   useEffect(() => {
-
-    getLogisticRegression(password)
-
-  }, [getLogisticRegression , password]);
+    if (password) {
+     
+      getLogisticRegression(password);
+      getRandomForest(password);
+      getDecisionScore(password);
+      getSimilarityScore(password);
+    }
+  }, [password]);
+  
+  useEffect(() => {
+    setAverageScore(
+      (regressionScore + randomForestScore  + similarityScore) / 3
+    );
+  }, [regressionScore, randomForestScore, decisionScore, similarityScore]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -81,14 +143,17 @@ const RegisterForm = () => {
         sx={{
           // border : "1px solid green ",
           backgroundColor: "#121212",
-          minHeight: 600,
+          minHeight: "600px",
+          marginBottom : 4,
           paddingY: 4,
           borderRadius: 3,
           marginTop: { xs: 5, md: 10 },
           display: { xs: "block", md: "flex" },
         }}
       >
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="xs" sx={{
+          height : "600px"
+        }}>
           <Typography
             variant="h5"
             color="primary"
@@ -164,7 +229,7 @@ const RegisterForm = () => {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type="text"
                 id="password"
                 autoComplete="current-password"
                 onChange={(e) => {
@@ -259,7 +324,10 @@ const RegisterForm = () => {
           </Box>
         </Container>
 
-        <Container sx={{ marginTop: { xs: 5, md: 0 }, flex: 1 }}>
+        <Container sx={{ 
+          marginTop: { xs: 5, md: 0 },
+          height : "600px"
+      }}>
           <Typography
             variant="h5"
             color="primary"
@@ -288,7 +356,7 @@ const RegisterForm = () => {
               <LinearProgress
                 color="secondary"
                 variant="determinate"
-                value={70}
+                value={decisionScore}
                 sx={{ marginTop: 1 }}
               />
             </Box>
@@ -311,12 +379,12 @@ const RegisterForm = () => {
 
             <Box sx={{ marginBottom: 2, width: "100%" }}>
               <Typography variant="h6" color="info" sx={{ textAlign: "left" }}>
-                Neural Network
+                Neural Network 
               </Typography>
               <LinearProgress
                 color="info"
                 variant="determinate"
-                value={80}
+                value={similarityScore}
                 sx={{ marginTop: 1 }}
               />
             </Box>
@@ -332,7 +400,7 @@ const RegisterForm = () => {
               <LinearProgress
                 color="warning"
                 variant="determinate"
-                value={50}
+                value={randomForestScore}
                 sx={{ marginTop: 1 }}
               />
             </Box>
@@ -348,16 +416,17 @@ const RegisterForm = () => {
 
           <Box sx={{ marginBottom: 2, width: "100%" }}>
             <Typography variant="h6" color="#fff" sx={{ textAlign: "left" }}>
-              Average
+              Average ({averageScore.toFixed(2)}%)
             </Typography>
             <LinearProgress
               color="primary"
               variant="determinate"
-              value={50}
+              value={averageScore}
               sx={{ marginTop: 1 }}
             />
           </Box>
         </Container>
+        
       </Container>
     </ThemeProvider>
   );
