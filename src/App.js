@@ -4,8 +4,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RegisterForm from "./Register";
 import UserProfile from "./UserProfile";
 import PassCheck from "./PassCheck"
+import axios from "axios";
+
+
+
+export  const axiosInstance = axios.create({
+  // baseURL: "http://localhost:4000",
+  baseURL : "https://crispy-spoon-9izq.onrender.com"
+});
 
 const App = () => {
+
   return (
     <>
       <BrowserRouter>
@@ -15,7 +24,7 @@ const App = () => {
           <Routes>
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/" element={<RegisterForm />} />
-            <Route path="/pass-verification" element={<PassCheck />} />
+            <Route path="/password/check" element={<PassCheck />} />
             <Route path="/user/login" element={<LoginForm />} />
             </Routes>
           </div>  

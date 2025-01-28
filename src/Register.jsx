@@ -11,9 +11,10 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import axios from "axios";
+
 import { toast } from "react-toastify";
 import {useNavigate}from "react-router-dom"
+import { axiosInstance } from "./App";
 
 const theme = createTheme({
   palette: {
@@ -36,10 +37,7 @@ const theme = createTheme({
 });
 
 const RegisterForm = () => {
-  const axiosInstance = axios.create({
-    // baseURL: "http://localhost:4000",
-    baseURL : "https://crispy-spoon-9izq.onrender.com"
-  });
+
 
   const navigate = useNavigate()
   const handleSubmit = async (event) => {
@@ -53,8 +51,9 @@ const RegisterForm = () => {
 
     if (data.success === true) {
       toast.success(data.message);
+      localStorage.setItem("email" , payload.email)
       setTimeout(() => {
-        navigate("/pass-verification")
+        navigate("/password/check")
       }, 2000);
     
     } else {
