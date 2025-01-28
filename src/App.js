@@ -3,6 +3,7 @@ import LoginForm from "./Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RegisterForm from "./Register";
 import UserProfile from "./UserProfile";
+import PassCheck from "./PassCheck"
 
 const App = () => {
   return (
@@ -14,9 +15,10 @@ const App = () => {
           <Routes>
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/" element={<RegisterForm />} />
+            <Route path="/pass-verification" element={<PassCheck />} />
             <Route path="/user/login" element={<LoginForm />} />
             </Routes>
-          </div>
+          </div>  
        
       </BrowserRouter>
     </>
