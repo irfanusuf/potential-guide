@@ -9,8 +9,8 @@ import axios from "axios";
 
 
 export  const axiosInstance = axios.create({
-  // baseURL: "http://localhost:4000",
-  baseURL : "https://crispy-spoon-9izq.onrender.com"
+  baseURL: "http://localhost:4000",
+  // baseURL : "https://crispy-spoon-9izq.onrender.com"
 });
 
 const App = () => {

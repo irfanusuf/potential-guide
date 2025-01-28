@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -37,6 +37,22 @@ const theme = createTheme({
 });
 
 const RegisterForm = () => {
+
+
+  const [email, setEmail] = useState("");
+  const [isValid, setIsValid] = useState(true);
+
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    setEmail(value);
+
+    // Validate email format
+    setIsValid(emailRegex.test(value) || value === ""); // Allow empty input
+  };
+
 
 
   const navigate = useNavigate()
@@ -126,34 +142,42 @@ const RegisterForm = () => {
                 width: "100%", // Fixes container width
               }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                variant="outlined"
-                // InputLabelProps={{
-                //   style: { color: "#AFAFAF" },
-                // }}
-                sx={{
-                  input: { color: "#FFFFFF" },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#1DFDBF",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#1DFDBF",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#1DFDBF",
-                    },
-                  },
-                }}
-              />
+         <TextField
+      margin="normal"
+      required
+      fullWidth
+      id="email"
+      label="Email"
+      name="email"
+      type="email"
+      autoComplete="email"
+      autoFocus
+      variant="outlined"
+      value={email}
+      onChange={handleChange}
+      error={!isValid}
+      helperText={!isValid ? "Please enter a valid email address" : ""}
+      sx={{
+        input: { color: "#FFFFFF" },
+        "& .MuiOutlinedInput-root": {
+          "& fieldset": {
+            borderColor: isValid ? "#1DFDBF" : "#FF1744", // Error border color
+          },
+          "&:hover fieldset": {
+            borderColor: isValid ? "#1DFDBF" : "#FF1744",
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: isValid ? "#1DFDBF" : "#FF1744",
+          },
+        },
+        "& .MuiInputLabel-root": {
+          color: "#AFAFAF",
+        },
+        "& .MuiInputLabel-root.Mui-focused": {
+          color: isValid ? "#1DFDBF" : "#FF1744",
+        },
+      }}
+    />
 
               {/* Submit Button */}
               <Button

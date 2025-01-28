@@ -4,16 +4,15 @@ import {
   Button,
   Container,
   CssBaseline,
-  Divider,
   TextField,
   Typography,
-  Link,
   ThemeProvider,
   createTheme,
   LinearProgress,
 } from "@mui/material";
 
 import { axiosInstance } from "./App";
+import { toast } from "react-toastify";
 
 
 const theme = createTheme({
@@ -50,9 +49,7 @@ const RegisterForm = () => {
   const [textColor , setColor] = useState("red")
 
 
-
-
-  const [loading, setLoading] = useState(false);
+  const [load, setLoad] = useState(true);
 
  
 
@@ -62,7 +59,7 @@ const RegisterForm = () => {
         const { data } = await axiosInstance.post("/check/regression", {
           password,
         });
-        setRegressionScore(data.regressionScore);
+        setRegressionScore(data.regressionScore || 0);
       } catch (error) {
         console.log(error);
       }
@@ -76,7 +73,7 @@ const RegisterForm = () => {
         const { data } = await axiosInstance.post("/check/randomForest", {
           password,
         });
-        setRandomForestScore(data.randomForestScore);
+        setRandomForestScore(data.randomForestScore || 0);
       } catch (error) {
         console.log(error);
       }
@@ -90,7 +87,7 @@ const RegisterForm = () => {
         const { data } = await axiosInstance.post("/check/decision", {
           password,
         });
-        setDecisionScore(data.decisionTreeScore);
+        setDecisionScore(data.decisionTreeScore || 0);
       } catch (error) {
         console.log(error);
       }
@@ -104,7 +101,7 @@ const RegisterForm = () => {
         const { data } = await axiosInstance.post("/check/similarity", {
           password,
         });
-        setSimilarityScore(data.score);
+        setSimilarityScore(data.score || 50);
       } catch (error) {
         console.log(error);
       }
@@ -116,15 +113,22 @@ const RegisterForm = () => {
 
   // api call
   useEffect(() => {
-    if (password.length > 4 ) {
+    if ( password.length > 4 ) {
       getLogisticRegression(password);
       getRandomForest(password);
       getDecisionScore(password);
       getSimilarityScore(password);
+    }else{
+      setPassRemarks("")
+      setDecisionScore(0)
+      setRandomForestScore(0)
+      setSimilarityScore(0)
+      setRegressionScore(0)
     }
+   
   }, [password]);
 
-
+ 
   // calculate average 
   useEffect(() => {
     setAverageScore(
@@ -152,16 +156,22 @@ const RegisterForm = () => {
     } else if (averageScore > 90 && averageScore < 100) {
       setPassRemarks(" Very Strong Password!");
       setColor("green")
+      setLoad(false)
     } 
     else{
       setPassRemarks("");
+      setPassRemarks2("")
     }
 
-    if(averageScore > 10 && averageScore < 99 && similarityScore > 0 && similarityScore< 90){
+    if(averageScore > 10 && averageScore < 99 && similarityScore > 0 && similarityScore< 50){
       setPassRemarks2("Commonly Used Passwords!");
       setColor("red")
     }else{
       setPassRemarks2("");
+    }
+
+    if(averageScore < 90){
+      setLoad(true)
     }
 
   }, [averageScore , similarityScore])
@@ -175,6 +185,11 @@ const RegisterForm = () => {
     const payload = {
       password: formData.get("password"),
     };
+    console.log(payload)
+    if(averageScore > 90){
+
+      toast.success(payload.password)
+    }
   };
 
   return (
@@ -263,6 +278,8 @@ const RegisterForm = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
+                disabled = {load}
+                
                 sx={{
                   backgroundColor: "#1DFDBF",
                   color: "#000000",
