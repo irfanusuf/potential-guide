@@ -6,8 +6,6 @@ import {
   CssBaseline,
   TextField,
   Typography,
-  ThemeProvider,
-  createTheme,
   LinearProgress,
 } from "@mui/material";
 
@@ -33,6 +31,10 @@ const RegisterForm = () => {
   const [load, setLoad] = useState(true);
 
   const navigate = useNavigate()
+
+   useEffect(()=>{
+      document.title = "passProtekt | Pass check"
+    },[])
 
   const getLogisticRegression = useCallback(
     async (password) => {
@@ -115,19 +117,19 @@ const RegisterForm = () => {
 
   // decison tree for ui
   useEffect(() => {
-    if (averageScore > 0 && averageScore < 30) {
+    if (averageScore > 0 && averageScore <=30) {
       setPassRemarks("Very Weak Password!");
       setColor("red");
-    } else if (averageScore > 30 && averageScore < 60) {
+    } else if (averageScore > 30 && averageScore <=60) {
       setPassRemarks("Weak Password!");
       setColor("orange");
-    } else if (averageScore > 60 && averageScore < 80) {
+    } else if (averageScore > 60 && averageScore <=80) {
       setPassRemarks("Medium Strength Password!");
       setColor("blue");
-    } else if (averageScore > 80 && averageScore < 90) {
+    } else if (averageScore > 80 && averageScore <=90) {
       setPassRemarks("Strong Password!");
       setColor("purple");
-    } else if (averageScore > 90 && averageScore < 100) {
+    } else if (averageScore > 90 && averageScore <=100) {
       setPassRemarks(" Very Strong Password!");
       setColor("green");
       setLoad(false);
@@ -160,17 +162,19 @@ const RegisterForm = () => {
       password: formData.get("password"),
     };
 
-    const query = localStorage.getItem("email");
+   
 
     if (averageScore > 90) {    
+      const query = localStorage.getItem("email");
       const {data} = await axiosInstance.post(`/user/registerPassword?email=${query}` , payload)
       if(data.success){
         toast.success(data.message)
         setTimeout(() => {
           navigate("/user/login")
+          localStorage.removeItem("email")
         }, 2000);
       }else{
-        toast.error(data.message)
+        toast.success(data.message)
       }
     }
   };
@@ -188,7 +192,7 @@ const RegisterForm = () => {
           marginBottom: 4,
           paddingY: 4,
           borderRadius: 3,
-          marginTop: { xs: 5, md: 10 },
+          marginTop: { xs: 3, md: 3 },
           display: { md: "flex", sm: "block" },
         }}
       >

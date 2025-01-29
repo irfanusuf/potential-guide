@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -23,6 +23,10 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(true);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+   useEffect(()=>{
+      document.title = "passProtekt | Login"
+    },[])
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -65,8 +69,9 @@ const LoginForm = () => {
           backgroundColor: "#121212",
           minheight: 600,
           paddingY: 4,
+          paddingTop : 6,
           borderRadius: 3,
-          marginTop: 10,
+          marginTop: { xs: 5, md: 5 },
           marginBottom: 10,
         }}
       >

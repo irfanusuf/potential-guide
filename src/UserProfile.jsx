@@ -21,13 +21,19 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+
+   useEffect(()=>{
+      document.title = "passProtekt | Profile"
+    },[])
+
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
 
-        const {data} = await axiosInstance.get("/users/all"); // Adjust endpoint as needed
+        const {data} = await axiosInstance.get("/users/all"); 
         console.log(data.payload)
-        setUsers(data.payload); // Ensure backend returns an array of user objects
+        setUsers(data.payload); 
         setLoading(false);
       } catch (err) {
         setError("Failed to load user data");
@@ -45,7 +51,11 @@ const UserProfile = () => {
       </Typography>
 
       {loading ? (
+
+        <Container   sx={{ minHeight: "400px" ,  display : "flex" , alignItems : "center" , justifyContent : "center"}}>
+          
         <CircularProgress />
+        </Container>
       ) : error ? (
         <Typography textAlign="center" color="error">{error}</Typography>
       ) : (

@@ -6,6 +6,7 @@ import UserProfile from "./UserProfile";
 import PassCheck from "./PassCheck";
 import axios from "axios";
 import { createTheme, ThemeProvider } from "@mui/material";
+import NavBar from "./AppBar";
 
 export const axiosInstance = axios.create({
   // baseURL: "http://localhost:4000",
@@ -37,11 +38,15 @@ const App = () => {
     <>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
+
+          <NavBar/>
+
           <div className="main-container">
             <Routes>
               
               <Route path="/" element={<RegisterForm />} />
               <Route path="/password/check" element={<PassCheck />} />
+              <Route path="/user/register" element={<RegisterForm />} />
               <Route path="/user/login" element={<LoginForm />} />
               <Route path="/user/profile" element={<UserProfile />} />
              

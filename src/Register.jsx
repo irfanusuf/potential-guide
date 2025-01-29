@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -8,18 +8,23 @@ import {
   TextField,
   Typography,
   Link,
-  ThemeProvider,
-  createTheme,
 } from "@mui/material";
 
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "./App";
+import logo from "./assets/logo.png"
 
 const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(true);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+
+  useEffect(()=>{
+    document.title = "passProtekt | Register"
+  },[])
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -62,7 +67,7 @@ const RegisterForm = () => {
           marginBottom: 4,
           paddingY: 4,
           borderRadius: 3,
-          marginTop: { xs: 5, md: 10 },
+          marginTop: { xs: 5, md: 5 },
           display: { xs: "block", md: "flex" },
         }}
       >
@@ -76,9 +81,9 @@ const RegisterForm = () => {
           <Typography
             variant="h5"
             color="primary"
-            sx={{ fontWeight: "bold", textAlign: "center" }}
+            sx={{ fontWeight: "bold", textAlign: "center" ,fontFamily: 'monospace', letterSpacing: '.2rem',}}
           >
-            ML based password validation system.
+            Welcome To PassProtekt
           </Typography>
 
           <Box
@@ -90,18 +95,15 @@ const RegisterForm = () => {
             }}
           >
             {/* Icon */}
-            <Box sx={{ marginBottom: 2 }}>
-              <Typography
-                variant="h2"
-                color="primary"
-                sx={{ fontWeight: "bold", textAlign: "center" }}
-              >
-                ∞
-              </Typography>
+            <Box >
+            
+            <img src= {logo} alt="main-logo" width={200}/>
             </Box>
 
             {/* Title */}
-            <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
+            <Typography   variant="h6"
+            // color="primary"
+            sx={{ fontWeight: "semi-bold", textAlign: "center" }}>
               Register With Us
             </Typography>
 
@@ -158,6 +160,7 @@ const RegisterForm = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
+                disabled = {!isValid}
                 sx={{
                   backgroundColor: "#1DFDBF",
                   color: "#000000",
