@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,187 +8,220 @@ import {
   TextField,
   Typography,
   Link,
-  ThemeProvider,
-  createTheme,
 } from "@mui/material";
+import { axiosInstance } from "./App";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 // import { Google as GoogleIcon } from "@mui/icons-material";
 
-const theme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#1DFDBF",
-    },
-    background: {
-      default: "#0F0F0F",
-      paper: "#121212",
-    },
-    text: {
-      primary: "#FFFFFF",
-      secondary: "#AFAFAF",
-    },
-  },
-  typography: {
-    fontFamily: "Arial, sans-serif",
-  },
-});
+
 
 const LoginForm = () => {
-  const handleSubmit = (event) => {
+
+  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [isValid, setIsValid] = useState(true);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    setEmail(value);
+    setIsValid(emailRegex.test(value));
+  };
+
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const data = {
+    const payload = {
       email: formData.get("email"),
       password: formData.get("password"),
     };
-    console.log("Login Data:", data);
+    const{data} =  await axiosInstance.post("/user/login" , payload)
+    if(data.success){
+      toast.success(data.message)
+      localStorage.setItem("adminLogin" , "success")
+      localStorage.setItem("loginInfo" , payload.email)
+      setTimeout(() => {
+        navigate("/user/profile")
+      }, 2000);
+    }
+    else{
+      toast.error(data.message)
+    }
+   
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <CssBaseline />
 
       <Container
-        maxWidth="xs"
+        maxWidth="md"
         sx={{
           // border : "1px solid green ",
           backgroundColor: "#121212",
-          height: 600,
+          minheight: 600,
           paddingY: 4,
           borderRadius: 3,
           marginTop: 10,
+          marginBottom: 10,
         }}
       >
-        <Typography
-          variant="h5"
-          color="primary"
-          sx={{ fontWeight: "bold", textAlign: "center" }}
-        >
-          ML based password validation system.
-        </Typography>
-        <Box
+        <Container
+          component="main"
+          maxWidth="xs"
           sx={{
-            marginTop: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            height: "600px",
           }}
         >
-          {/* Icon */}
-          <Box sx={{ marginBottom: 2 }}>
-            <Typography
-              variant="h2"
-              color="primary"
-              sx={{ fontWeight: "bold", textAlign: "center" }}
-            >
-              ∞
-            </Typography>
-          </Box>
-
-          {/* Title */}
-          <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-            Login
+          <Typography
+            variant="h5"
+            color="primary"
+            sx={{ fontWeight: "bold", textAlign: "center" }}
+          >
+            ML based password validation system.
           </Typography>
-
-          {/* Form */}
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
             sx={{
-              width: "100%", // Fixes container width
+              marginTop: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              variant="outlined"
-              // InputLabelProps={{
-              //   style: { color: "#AFAFAF" },
-              // }}
-              sx={{
-                input: { color: "#FFFFFF" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                },
-              }}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              // InputLabelProps={{
-              //   style: { color: "#AFAFAF" },
-              // }}
-              sx={{
-                input: { color: "#FFFFFF" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#1DFDBF",
-                  },
-                },
-              }}
-            />
-            {/* Forgot Password */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: 2,
-              }}
-            >
-              <Link href="#" underline="hover" color="primary" variant="body2">
-                Forgot password?
-              </Link>
+            {/* Icon */}
+            <Box sx={{ marginBottom: 2 }}>
+              <Typography
+                variant="h2"
+                color="primary"
+                sx={{ fontWeight: "bold", textAlign: "center" }}
+              >
+                ∞
+              </Typography>
             </Box>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
+            {/* Title */}
+            <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
+              Login
+            </Typography>
+
+            {/* Form */}
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
               sx={{
-                backgroundColor: "#1DFDBF",
-                color: "#000000",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#19D6A9",
-                },
+                width: "100%", // Fixes container width
               }}
             >
-              Log in
-            </Button>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                autoFocus
+                variant="outlined"
+                value={email}
+                onChange={handleChange}
+                error={!isValid}
+                helperText={
+                  !isValid ? "Please enter a valid email address" : ""
+                }
+                sx={{
+                  input: { color: "#FFFFFF" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: isValid ? "#1DFDBF" : "#FF1744", // Error border color
+                    },
+                    "&:hover fieldset": {
+                      borderColor: isValid ? "#1DFDBF" : "#FF1744",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: isValid ? "#1DFDBF" : "#FF1744",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "#AFAFAF",
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: isValid ? "#1DFDBF" : "#FF1744",
+                  },
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                // InputLabelProps={{
+                //   style: { color: "#AFAFAF" },
+                // }}
+                sx={{
+                  input: { color: "#FFFFFF" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#1DFDBF",
+                    },
+                  },
+                }}
+              />
+              {/* Forgot Password */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginBottom: 2,
+                }}
+              >
+                <Link
+                  href="#"
+                  underline="hover"
+                  color="primary"
+                  variant="body2"
+                >
+                  Forgot password?
+                </Link>
+              </Box>
 
-            {/* Divider */}
-            <Divider sx={{ marginY: 3 }}>OR</Divider>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{
+                  backgroundColor: "#1DFDBF",
+                  color: "#000000",
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#19D6A9",
+                  },
+                }}
+              >
+                Log in
+              </Button>
 
-            {/* Google Login Button */}
-            {/* <Button
+              {/* Divider */}
+              <Divider sx={{ marginY: 3 }}>OR</Divider>
+
+              {/* Google Login Button */}
+              {/* <Button
               fullWidth
               variant="outlined"
               startIcon={<GoogleIcon />}
@@ -206,24 +239,25 @@ const LoginForm = () => {
               Login with Google
             </Button> */}
 
-            {/* Footer */}
-            <Typography
-              variant="body2"
-              sx={{
-                marginTop: 2,
-                textAlign: "center",
-                color: "#AFAFAF",
-              }}
-            >
-              Don’t have an account?{" "}
-              <Link href="/" underline="hover" color="primary">
-                Sign Up Now
-              </Link>
-            </Typography>
+              {/* Footer */}
+              <Typography
+                variant="body2"
+                sx={{
+                  marginTop: 2,
+                  textAlign: "center",
+                  color: "#AFAFAF",
+                }}
+              >
+                Don’t have an account?{" "}
+                <Link href="/" underline="hover" color="primary">
+                  Sign Up Now
+                </Link>
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </Container>
       </Container>
-    </ThemeProvider>
+    </>
   );
 };
 

@@ -13,32 +13,14 @@ import {
 
 import { axiosInstance } from "./App";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
-const theme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#1DFDBF",
-    },
-    background: {
-      default: "#0F0F0F",
-      paper: "#121212",
-    },
-    text: {
-      primary: "#FFFFFF",
-      secondary: "#AFAFAF",
-    },
-  },
-  typography: {
-    fontFamily: "Arial, sans-serif",
-  },
-});
 
 const RegisterForm = () => {
   const [password, setPassword] = useState("");
-  const [PassRemarks ,  setPassRemarks] = useState("")
-  const [PassRemarks2 ,  setPassRemarks2] = useState("")
+  const [PassRemarks, setPassRemarks] = useState("");
+  const [PassRemarks2, setPassRemarks2] = useState("");
 
   const [regressionScore, setRegressionScore] = useState(0);
   const [randomForestScore, setRandomForestScore] = useState(0);
@@ -46,12 +28,11 @@ const RegisterForm = () => {
   const [similarityScore, setSimilarityScore] = useState(0);
 
   const [averageScore, setAverageScore] = useState(0);
-  const [textColor , setColor] = useState("red")
-
+  const [textColor, setColor] = useState("red");
 
   const [load, setLoad] = useState(true);
 
- 
+  const navigate = useNavigate()
 
   const getLogisticRegression = useCallback(
     async (password) => {
@@ -109,91 +90,93 @@ const RegisterForm = () => {
     [axiosInstance]
   );
 
-
-
   // api call
   useEffect(() => {
-    if ( password.length > 4 ) {
+    if (password.length > 4) {
       getLogisticRegression(password);
       getRandomForest(password);
       getDecisionScore(password);
       getSimilarityScore(password);
-    }else{
-      setPassRemarks("")
-      setDecisionScore(0)
-      setRandomForestScore(0)
-      setSimilarityScore(0)
-      setRegressionScore(0)
+    } else {
+      setPassRemarks("");
+      setDecisionScore(0);
+      setRandomForestScore(0);
+      setSimilarityScore(0);
+      setRegressionScore(0);
     }
-   
   }, [password]);
 
- 
-  // calculate average 
+  // calculate average
   useEffect(() => {
     setAverageScore(
       (regressionScore + randomForestScore + similarityScore) / 3
     );
-
   }, [regressionScore, randomForestScore, decisionScore, similarityScore]);
 
-
   // decison tree for ui
-  useEffect(()=>{
-
+  useEffect(() => {
     if (averageScore > 0 && averageScore < 30) {
       setPassRemarks("Very Weak Password!");
-      setColor("red")
+      setColor("red");
     } else if (averageScore > 30 && averageScore < 60) {
       setPassRemarks("Weak Password!");
-      setColor("orange")
+      setColor("orange");
     } else if (averageScore > 60 && averageScore < 80) {
       setPassRemarks("Medium Strength Password!");
-      setColor("blue")
+      setColor("blue");
     } else if (averageScore > 80 && averageScore < 90) {
       setPassRemarks("Strong Password!");
-      setColor("purple")
+      setColor("purple");
     } else if (averageScore > 90 && averageScore < 100) {
       setPassRemarks(" Very Strong Password!");
-      setColor("green")
-      setLoad(false)
-    } 
-    else{
+      setColor("green");
+      setLoad(false);
+    } else {
       setPassRemarks("");
-      setPassRemarks2("")
-    }
-
-    if(averageScore > 10 && averageScore < 99 && similarityScore > 0 && similarityScore< 50){
-      setPassRemarks2("Commonly Used Passwords!");
-      setColor("red")
-    }else{
       setPassRemarks2("");
     }
 
-    if(averageScore < 90){
-      setLoad(true)
+    if (
+      averageScore > 10 &&
+      averageScore < 99 &&
+      similarityScore > 0 &&
+      similarityScore < 50
+    ) {
+      setPassRemarks2("Commonly Used Passwords!");
+      setColor("red");
+    } else {
+      setPassRemarks2("");
     }
 
-  }, [averageScore , similarityScore])
+    if (averageScore < 90) {
+      setLoad(true);
+    }
+  }, [averageScore, similarityScore]);
 
-  
-
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const payload = {
       password: formData.get("password"),
     };
-    console.log(payload)
-    if(averageScore > 90){
 
-      toast.success(payload.password)
+    const query = localStorage.getItem("email");
+
+    if (averageScore > 90) {    
+      const {data} = await axiosInstance.post(`/user/registerPassword?email=${query}` , payload)
+      if(data.success){
+        toast.success(data.message)
+        setTimeout(() => {
+          navigate("/user/login")
+        }, 2000);
+      }else{
+        toast.error(data.message)
+      }
     }
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <CssBaseline />
       <Container
         component="main"
@@ -212,6 +195,10 @@ const RegisterForm = () => {
         <Container
           sx={{
             padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            // alignItems:"center",
+            // justifyContent: { md: "center", sm: "flex-start" },
           }}
         >
           <Box
@@ -222,12 +209,31 @@ const RegisterForm = () => {
               alignItems: "center",
             }}
           >
-            {/* Title */}
             <Typography
               variant="h5"
               color="primary"
+              sx={{ fontWeight : "bold", textAlign: "center" }}
+            >
+              ML based password validation system.
+            </Typography>
+
+            {/* Icon */}
+            <Box sx={{ marginBottom: 2 }}>
+              <Typography
+                variant="h2"
+                color="primary"
+                sx={{ fontWeight: "bold", textAlign: "center" }}
+              >
+                ∞
+              </Typography>
+            </Box>
+
+            {/* Title */}
+            <Typography
+              variant="h6"
+              color="primary"
               sx={{
-                fontWeight: "bold",
+                fontWeight: "semi-bold",
                 textAlign: "center",
                 marginBottom: 2,
               }}
@@ -278,8 +284,7 @@ const RegisterForm = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                disabled = {load}
-                
+                disabled={load}
                 sx={{
                   backgroundColor: "#1DFDBF",
                   color: "#000000",
@@ -290,34 +295,30 @@ const RegisterForm = () => {
                   },
                 }}
               >
-                Submit
+                {!load ? "Submit" : "Check Password"}
               </Button>
             </Box>
           </Box>
 
-
-          <Typography  variant="h6" color="secondary" sx={{ marginY: 2}} >
-            Password Remarks 
-            <Typography sx={{ color : `${textColor}` }}> {PassRemarks} <br/> {PassRemarks2} </Typography>
+          <Typography variant="h6" color="secondary" sx={{ marginY: 2 }}>
+            Password Remarks
+            <Typography sx={{ color: `${textColor}` }}>
+              {PassRemarks} <br /> {PassRemarks2}
+            </Typography>
           </Typography>
-
-        
-         
-
-        
         </Container>
 
         <Container
           sx={{
-            marginTop: { xs: 5, md: 5 },
+            marginTop: { md: 5, sm: 0 },
             height: "600px",
           }}
         >
           <Typography
-            variant="h5"
+            variant="h6"
             color="primary"
             sx={{
-              fontWeight: "bold",
+              fontWeight: "semi-bold",
               textAlign: "center",
               marginBottom: 2,
             }}
@@ -331,7 +332,7 @@ const RegisterForm = () => {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 300,
+              // minHeight: 300,
             }}
           >
             <Box sx={{ marginBottom: 2, width: "100%" }}>
@@ -396,10 +397,10 @@ const RegisterForm = () => {
           </Box>
 
           <Typography
-            variant="h5"
+            variant="h6"
             color="primary"
             sx={{
-              fontWeight: "bold",
+              fontWeight: "semi-bold",
               textAlign: "center",
               marginBottom: 2,
             }}
@@ -420,7 +421,7 @@ const RegisterForm = () => {
           </Box>
         </Container>
       </Container>
-    </ThemeProvider>
+    </>
   );
 };
 

@@ -13,49 +13,22 @@ import {
 } from "@mui/material";
 
 import { toast } from "react-toastify";
-import {useNavigate}from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "./App";
 
-const theme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#1DFDBF",
-    },
-    background: {
-      default: "#0F0F0F",
-      paper: "#121212",
-    },
-    text: {
-      primary: "#FFFFFF",
-      secondary: "#AFAFAF",
-    },
-  },
-  typography: {
-    fontFamily: "Arial, sans-serif",
-  },
-});
-
 const RegisterForm = () => {
-
-
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(true);
-
-  // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleChange = (event) => {
     const value = event.target.value;
     setEmail(value);
-
-    // Validate email format
-    setIsValid(emailRegex.test(value) || value === ""); // Allow empty input
+    setIsValid(emailRegex.test(value));
   };
 
+  const navigate = useNavigate();
 
-
-  const navigate = useNavigate()
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -67,18 +40,17 @@ const RegisterForm = () => {
 
     if (data.success === true) {
       toast.success(data.message);
-      localStorage.setItem("email" , payload.email)
+      localStorage.setItem("email", payload.email);
       setTimeout(() => {
-        navigate("/password/check")
+        navigate("/password/check");
       }, 2000);
-    
     } else {
       toast.error(data.message);
     }
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <CssBaseline />
 
       <Container
@@ -142,42 +114,44 @@ const RegisterForm = () => {
                 width: "100%", // Fixes container width
               }}
             >
-         <TextField
-      margin="normal"
-      required
-      fullWidth
-      id="email"
-      label="Email"
-      name="email"
-      type="email"
-      autoComplete="email"
-      autoFocus
-      variant="outlined"
-      value={email}
-      onChange={handleChange}
-      error={!isValid}
-      helperText={!isValid ? "Please enter a valid email address" : ""}
-      sx={{
-        input: { color: "#FFFFFF" },
-        "& .MuiOutlinedInput-root": {
-          "& fieldset": {
-            borderColor: isValid ? "#1DFDBF" : "#FF1744", // Error border color
-          },
-          "&:hover fieldset": {
-            borderColor: isValid ? "#1DFDBF" : "#FF1744",
-          },
-          "&.Mui-focused fieldset": {
-            borderColor: isValid ? "#1DFDBF" : "#FF1744",
-          },
-        },
-        "& .MuiInputLabel-root": {
-          color: "#AFAFAF",
-        },
-        "& .MuiInputLabel-root.Mui-focused": {
-          color: isValid ? "#1DFDBF" : "#FF1744",
-        },
-      }}
-    />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                autoFocus
+                variant="outlined"
+                value={email}
+                onChange={handleChange}
+                error={!isValid}
+                helperText={
+                  !isValid ? "Please enter a valid email address" : ""
+                }
+                sx={{
+                  input: { color: "#FFFFFF" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: isValid ? "#1DFDBF" : "#FF1744", // Error border color
+                    },
+                    "&:hover fieldset": {
+                      borderColor: isValid ? "#1DFDBF" : "#FF1744",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: isValid ? "#1DFDBF" : "#FF1744",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "#AFAFAF",
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: isValid ? "#1DFDBF" : "#FF1744",
+                  },
+                }}
+              />
 
               {/* Submit Button */}
               <Button
@@ -218,7 +192,7 @@ const RegisterForm = () => {
           </Box>
         </Container>
       </Container>
-    </ThemeProvider>
+    </>
   );
 };
 
