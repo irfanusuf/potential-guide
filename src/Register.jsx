@@ -34,23 +34,30 @@ const RegisterForm = () => {
 
   const navigate = useNavigate();
 
+
+  
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const payload = {
-      email: formData.get("email"),
-    };
-
-    const { data } = await axiosInstance.post("/user/register", payload);
-
-    if (data.success === true) {
-      toast.success(data.message);
-      localStorage.setItem("email", payload.email);
-      setTimeout(() => {
-        navigate("/password/check");
-      }, 2000);
-    } else {
-      toast.error(data.message);
+    try {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const payload = {
+        email: formData.get("email"),
+      };
+  
+      const { data } = await axiosInstance.post("/user/register", payload);
+  
+      if (data.success === true) {
+        toast.success(data.message);
+        localStorage.setItem("email", payload.email);
+        setTimeout(() => {
+          navigate("/password/check");
+        }, 2000);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("some Error")
+      console.log(error)
     }
   };
 

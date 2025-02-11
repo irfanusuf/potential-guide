@@ -1,16 +1,31 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "./App";
 
 const IsAuthorised = () => {
   const navigate = useNavigate();
 
-  const isLoggedIn = localStorage.getItem("adminLogin");
-
   useEffect(() => {
-    if (!isLoggedIn || isLoggedIn !== "success") {
-      navigate("/user/login");
-    }
-  }, []);
+    const checkAuth = async () => {
+      try {
+        const { data } = await axiosInstance.get("/get-authenticated");
+
+        if (!data.success) {
+          navigate("/user/login");
+        }else{
+          localStorage.setItem("userInfo" , data.email)
+        }
+        
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        navigate("/user/login");
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
+  // return children; // Only render children if authorized
 };
 
 export default IsAuthorised;

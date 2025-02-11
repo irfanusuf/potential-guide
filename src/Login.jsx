@@ -37,17 +37,19 @@ const LoginForm = () => {
 
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+
+    try {
+      event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const payload = {
       email: formData.get("email"),
       password: formData.get("password"),
     };
     const{data} =  await axiosInstance.post("/user/login" , payload)
+
     if(data.success){
       toast.success(data.message)
-      localStorage.setItem("adminLogin" , "success")
-      localStorage.setItem("loginInfo" , payload.email)
+      
       setTimeout(() => {
         navigate("/user/profile")
       }, 2000);
@@ -56,6 +58,12 @@ const LoginForm = () => {
       toast.error(data.message)
     }
    
+      
+    } catch (error) {
+      toast.error("Some Error")
+      console.log(error)
+    }
+    
   };
 
   return (
