@@ -28,7 +28,8 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data } = await axiosInstance.get("/users/all");
+        const token = localStorage.getItem("token")
+        const { data } = await axiosInstance.get(`/users/all?token=${token}`);
         setUsers(data.payload);
         setLoading(false);
       } catch (err) {

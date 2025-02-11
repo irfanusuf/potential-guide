@@ -49,6 +49,7 @@ const LoginForm = () => {
 
     if(data.success){
       toast.success(data.message)
+      localStorage.setItem("token" , data.token)
       
       setTimeout(() => {
         navigate("/user/profile")

@@ -8,7 +8,9 @@ const IsAuthorised = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data } = await axiosInstance.get("/get-authenticated");
+        const token = localStorage.getItem("token")
+        
+        const { data } = await axiosInstance.get(`/get-authenticated?token=${token}`);
 
         if (!data.success) {
           navigate("/user/login");
