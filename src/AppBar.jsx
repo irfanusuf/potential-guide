@@ -93,10 +93,9 @@ function NavBar() {
                 <MenuItem key={page} onClick={()=>{
                   handleCloseNavMenu()
                   if (page === "User-Manual") {
-                    // Trigger file download
+                  
                     const link = document.createElement("a");
-                    link.href = "/PassProtekt-user-manual.pdf"; // Ensure the PDF is in the `public` folder
-                    link.download = "PassProtekt-user-manual.pdf"; // Suggested filename
+                    link.href = "/PassProtekt-user-manual.pdf"; 
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);

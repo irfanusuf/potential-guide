@@ -12,8 +12,7 @@ import {
 import { axiosInstance } from "./App";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
-
+import FAQSection from "./Accordion";
 
 const RegisterForm = () => {
   const [password, setPassword] = useState("");
@@ -30,11 +29,11 @@ const RegisterForm = () => {
 
   const [load, setLoad] = useState(true);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-   useEffect(()=>{
-      document.title = "passProtekt | Pass check"
-    },[])
+  useEffect(() => {
+    document.title = "passProtekt | Pass check";
+  }, []);
 
   const getLogisticRegression = useCallback(
     async (password) => {
@@ -117,19 +116,19 @@ const RegisterForm = () => {
 
   // decison tree for ui
   useEffect(() => {
-    if (averageScore > 0 && averageScore <=30) {
+    if (averageScore > 0 && averageScore <= 30) {
       setPassRemarks("Very Weak Password!");
       setColor("red");
-    } else if (averageScore > 30 && averageScore <=60) {
+    } else if (averageScore > 30 && averageScore <= 60) {
       setPassRemarks("Weak Password!");
       setColor("orange");
-    } else if (averageScore > 60 && averageScore <=80) {
+    } else if (averageScore > 60 && averageScore <= 80) {
       setPassRemarks("Medium Strength Password!");
       setColor("blue");
-    } else if (averageScore > 80 && averageScore <=90) {
+    } else if (averageScore > 80 && averageScore <= 90) {
       setPassRemarks("Strong Password!");
       setColor("purple");
-    } else if (averageScore > 90 && averageScore <=100) {
+    } else if (averageScore > 90 && averageScore <= 100) {
       setPassRemarks(" Very Strong Password!");
       setColor("green");
       setLoad(false);
@@ -155,26 +154,27 @@ const RegisterForm = () => {
     }
   }, [averageScore, similarityScore]);
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const payload = {
       password: formData.get("password"),
     };
 
-   
-
-    if (averageScore > 90) {    
+    if (averageScore > 90) {
       const query = localStorage.getItem("email");
-      const {data} = await axiosInstance.post(`/user/registerPassword?email=${query}` , payload)
-      if(data.success){
-        toast.success(data.message)
+      const { data } = await axiosInstance.post(
+        `/user/registerPassword?email=${query}`,
+        payload
+      );
+      if (data.success) {
+        toast.success(data.message);
         setTimeout(() => {
-          navigate("/user/login")
-          localStorage.removeItem("email")
+          navigate("/user/login");
+          localStorage.removeItem("email");
         }, 2000);
-      }else{
-        toast.success(data.message)
+      } else {
+        toast.success(data.message);
       }
     }
   };
@@ -182,57 +182,154 @@ const RegisterForm = () => {
   return (
     <>
       <CssBaseline />
-      <Container
-        component="main"
-        maxWidth="md"
-        sx={{
-          // height: "600px",
-          backgroundColor: "#121212",
-          minHeight: "600px",
-          marginBottom: 4,
-          paddingY: 4,
-          borderRadius: 3,
-          marginTop: { xs: 3, md: 3 },
-          display: { md: "flex", sm: "block" },
-        }}
-      >
-        <Container
+
+      <Container 
+         component="main"
+          maxWidth="md"
           sx={{
-            padding: 0,
-            display: "flex",
-            flexDirection: "column",
-            // alignItems:"center",
-            // justifyContent: { md: "center", sm: "flex-start" },
+            backgroundColor: "#121212",
+            minHeight: "600px",
+            marginBottom: 4,
+            paddingY: 4,
+            borderRadius: 3,
+            marginTop: { xs: 3, md: 3 },
+          }}>
+            
+
+        <Container
+          // component="main"
+          // maxWidth="md"
+          sx={{
+            backgroundColor: "#121212",
+            // minHeight: "600px",
+            // marginBottom: 4,
+            // paddingY: 4,
+            // borderRadius: 3,
+            // marginTop: { xs: 3, md: 3 },
+            display: { md: "flex", sm: "block" },
           }}
         >
-          <Box
+          <Container
             sx={{
-              marginTop: 0,
+              padding: 0,
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
+              // alignItems:"center",
+              // justifyContent: { md: "center", sm: "flex-start" },
             }}
           >
-            <Typography
-              variant="h5"
-              color="primary"
-              sx={{ fontWeight : "bold", textAlign: "center" }}
+            <Box
+              sx={{
+                marginTop: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
             >
-              ML based password validation system.
-            </Typography>
-
-            {/* Icon */}
-            <Box sx={{ marginBottom: 2 }}>
               <Typography
-                variant="h2"
+                variant="h5"
                 color="primary"
                 sx={{ fontWeight: "bold", textAlign: "center" }}
               >
-                ∞
+                ML based password validation system.
               </Typography>
+
+              {/* Icon */}
+              <Box sx={{ marginBottom: 2 }}>
+                <Typography
+                  variant="h2"
+                  color="primary"
+                  sx={{ fontWeight: "bold", textAlign: "center" }}
+                >
+                  ∞
+                </Typography>
+              </Box>
+
+              {/* Title */}
+              <Typography
+                variant="h6"
+                color="primary"
+                sx={{
+                  fontWeight: "semi-bold",
+                  textAlign: "center",
+                  marginBottom: 2,
+                }}
+              >
+                Choose Your Password
+              </Typography>
+
+              {/* Form */}
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{
+                  width: "100%", // Fixes container width
+                }}
+              >
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  value={password}
+                  type="text"
+                  id="password"
+                  // autoComplete="current-password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  sx={{
+                    input: { color: "#FFFFFF" },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#1DFDBF",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#1DFDBF",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#1DFDBF",
+                      },
+                    },
+                  }}
+                />
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={load}
+                  sx={{
+                    backgroundColor: "#1DFDBF",
+                    color: "#000000",
+                    fontWeight: "bold",
+                    marginTop: 4,
+                    "&:hover": {
+                      backgroundColor: "#19D6A9",
+                    },
+                  }}
+                >
+                  {!load ? "Submit" : "Check Password"}
+                </Button>
+              </Box>
             </Box>
 
-            {/* Title */}
+            <Typography variant="h6" color="secondary" sx={{ marginY: 2 }}>
+              Password Remarks
+              <Typography sx={{ color: `${textColor}` }}>
+                {PassRemarks} <br /> {PassRemarks2}
+              </Typography>
+            </Typography>
+          </Container>
+
+          <Container
+            sx={{
+              marginTop: { md: 5, sm: 0 },
+            }}
+          >
             <Typography
               variant="h6"
               color="primary"
@@ -242,188 +339,114 @@ const RegisterForm = () => {
                 marginBottom: 2,
               }}
             >
-              Choose Your Password
+              Password Strength
             </Typography>
 
-            {/* Form */}
             <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
               sx={{
-                width: "100%", // Fixes container width
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                // minHeight: 300,
               }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                value={password}
-                type="text"
-                id="password"
-                // autoComplete="current-password"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                sx={{
-                  input: { color: "#FFFFFF" },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#1DFDBF",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#1DFDBF",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#1DFDBF",
-                    },
-                  },
-                }}
-              />
+              <Box sx={{ marginBottom: 2, width: "100%" }}>
+                <Typography
+                  variant="h6"
+                  color="secondary"
+                  sx={{ textAlign: "left" }}
+                >
+                  Decision Tree
+                </Typography>
+                <LinearProgress
+                  color="secondary"
+                  variant="determinate"
+                  value={decisionScore}
+                  sx={{ marginTop: 1 }}
+                />
+              </Box>
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={load}
-                sx={{
-                  backgroundColor: "#1DFDBF",
-                  color: "#000000",
-                  fontWeight: "bold",
-                  marginTop: 4,
-                  "&:hover": {
-                    backgroundColor: "#19D6A9",
-                  },
-                }}
-              >
-                {!load ? "Submit" : "Check Password"}
-              </Button>
-            </Box>
-          </Box>
+              <Box sx={{ marginBottom: 2, width: "100%" }}>
+                <Typography
+                  variant="h6"
+                  color="success"
+                  sx={{ textAlign: "left" }}
+                >
+                  Logistic Regression
+                </Typography>
+                <LinearProgress
+                  color="success"
+                  variant="determinate"
+                  value={regressionScore}
+                  sx={{ marginTop: 1 }}
+                />
+              </Box>
 
-          <Typography variant="h6" color="secondary" sx={{ marginY: 2 }}>
-            Password Remarks
-            <Typography sx={{ color: `${textColor}` }}>
-              {PassRemarks} <br /> {PassRemarks2}
-            </Typography>
-          </Typography>
-        </Container>
+              <Box sx={{ marginBottom: 2, width: "100%" }}>
+                <Typography
+                  variant="h6"
+                  color="info"
+                  sx={{ textAlign: "left" }}
+                >
+                  Neural Network
+                </Typography>
+                <LinearProgress
+                  color="info"
+                  variant="determinate"
+                  value={similarityScore}
+                  sx={{ marginTop: 1 }}
+                />
+              </Box>
 
-        <Container
-          sx={{
-            marginTop: { md: 5, sm: 0 },
-            height: "600px",
-          }}
-        >
-          <Typography
-            variant="h6"
-            color="primary"
-            sx={{
-              fontWeight: "semi-bold",
-              textAlign: "center",
-              marginBottom: 2,
-            }}
-          >
-            Password Strength
-          </Typography>
+              <Box sx={{ marginBottom: 2, width: "100%" }}>
+                <Typography
+                  variant="h6"
+                  color="warning"
+                  sx={{ textAlign: "left" }}
+                >
+                  Random Forest
+                </Typography>
+                <LinearProgress
+                  color="warning"
+                  variant="determinate"
+                  value={randomForestScore}
+                  sx={{ marginTop: 1 }}
+                />
+              </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              // minHeight: 300,
-            }}
-          >
-            <Box sx={{ marginBottom: 2, width: "100%" }}>
-              <Typography
-                variant="h6"
-                color="secondary"
-                sx={{ textAlign: "left" }}
-              >
-                Decision Tree
-              </Typography>
-              <LinearProgress
-                color="secondary"
-                variant="determinate"
-                value={decisionScore}
-                sx={{ marginTop: 1 }}
-              />
             </Box>
 
-            <Box sx={{ marginBottom: 2, width: "100%" }}>
-              <Typography
-                variant="h6"
-                color="success"
-                sx={{ textAlign: "left" }}
-              >
-                Logistic Regression
-              </Typography>
-              <LinearProgress
-                color="success"
-                variant="determinate"
-                value={regressionScore}
-                sx={{ marginTop: 1 }}
-              />
-            </Box>
-
-            <Box sx={{ marginBottom: 2, width: "100%" }}>
-              <Typography variant="h6" color="info" sx={{ textAlign: "left" }}>
-                Neural Network
-              </Typography>
-              <LinearProgress
-                color="info"
-                variant="determinate"
-                value={similarityScore}
-                sx={{ marginTop: 1 }}
-              />
-            </Box>
-
-            <Box sx={{ marginBottom: 2, width: "100%" }}>
-              <Typography
-                variant="h6"
-                color="warning"
-                sx={{ textAlign: "left" }}
-              >
-                Random Forest
-              </Typography>
-              <LinearProgress
-                color="warning"
-                variant="determinate"
-                value={randomForestScore}
-                sx={{ marginTop: 1 }}
-              />
-            </Box>
-          </Box>
-
-          <Typography
-            variant="h6"
-            color="primary"
-            sx={{
-              fontWeight: "semi-bold",
-              textAlign: "center",
-              marginBottom: 2,
-            }}
-          >
-            Aggregrate Strength
-          </Typography>
-
-          <Box sx={{ marginBottom: 2, width: "100%" }}>
-            <Typography variant="h6" color="#fff" sx={{ textAlign: "left" }}>
-              Average ({averageScore.toFixed(2)}%)
-            </Typography>
-            <LinearProgress
+            <Typography
+              variant="h6"
               color="primary"
-              variant="determinate"
-              value={averageScore}
-              sx={{ marginTop: 1 }}
-            />
-          </Box>
+              sx={{
+                fontWeight: "semi-bold",
+                textAlign: "center",
+                marginBottom: 2,
+              }}
+            >
+              Aggregrate Strength
+            </Typography>
+
+            <Box sx={{ marginBottom: 2, width: "100%" }}>
+              <Typography variant="h6" color="#fff" sx={{ textAlign: "left" }}>
+                Average ({averageScore.toFixed(2)}%)
+              </Typography>
+              <LinearProgress
+                color="primary"
+                variant="determinate"
+                value={averageScore}
+                sx={{ marginTop: 1 }}
+              />
+            </Box>
+            
+          </Container>
+          
         </Container>
+
+        <FAQSection/>
+
       </Container>
     </>
   );
