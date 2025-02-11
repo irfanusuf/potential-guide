@@ -3,7 +3,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 function FAQSection() {
   return (
-    <Container sx={{width : "95%"}}>
+    <Container sx={{width : "95%" , marginTop : "20px"}}>
  
 
    
