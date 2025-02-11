@@ -9,8 +9,8 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import NavBar from "./AppBar";
 
 export const axiosInstance = axios.create({
-  // baseURL: "http://localhost:4000",
-  baseURL : "https://crispy-spoon-9izq.onrender.com",
+  baseURL: "http://localhost:4000",
+  // baseURL : "https://crispy-spoon-9izq.onrender.com",
   withCredentials :true
 });
 
