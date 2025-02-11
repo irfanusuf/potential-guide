@@ -11,13 +11,14 @@ import MenuItem from '@mui/material/MenuItem';
 import logo from "./assets/logo.png"
 import { useNavigate } from 'react-router-dom';
 
-const pages = ['Register', 'Login', 'Profile'];
+const pages = ['Register', 'Login', 'Profile' , "User-Manual"];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
 
   const navigate = useNavigate()
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -90,10 +91,21 @@ function NavBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={()=>{
-                  handleCloseNavMenu(page) 
-                  navigate(`/user/${page}`)
+                  handleCloseNavMenu()
+                  if (page === "User-Manual") {
+                    // Trigger file download
+                    const link = document.createElement("a");
+                    link.href = "/PassProtekt-user-manual.pdf"; // Ensure the PDF is in the `public` folder
+                    link.download = "PassProtekt-user-manual.pdf"; // Suggested filename
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  } else {
+                    navigate(`/user/${page}`);
+                  }
+                }}
 
-                }}>
+              >
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -130,8 +142,17 @@ function NavBar() {
               <Button
                 key={page}
                 onClick={()=>{
-                  handleCloseNavMenu(page)
-                  navigate(`/user/${page}`)
+                 
+                  if (page === "User-Manual") {
+                    const link = document.createElement("a");
+                    link.href = "/PassProtekt-user-manual.pdf";
+                    link.download = "PassProtekt-user-manual.pdf";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  } else {
+                    navigate(`/user/${page}`);
+                  }
                 }}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
